@@ -1,0 +1,33 @@
+# Not using persistent volumes in dev mode
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-mongo-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-mongo
+  template:
+    metadata:
+      labels:
+        app: test-mongo
+    spec:
+      containers:
+        - name: test-mongo
+          image: mongo
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-mongo-srv
+spec:
+  selector:
+    app: test-mongo
+  type: ClusterIP
+  ports:
+    - name: auth-db
+      protocol: TCP
+      port: 27017
+      targetPort: 27017

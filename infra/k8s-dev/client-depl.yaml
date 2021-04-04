@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-client-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-client
+  template:
+    metadata:
+      labels:
+        app: test-client
+    spec:
+      containers:
+        - name: test-client
+          image: sadeghsalesi/test-client
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-client-srv
+spec:
+  selector:
+    app: test-client
+  type: ClusterIP
+  ports:
+    - name: test-client
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
