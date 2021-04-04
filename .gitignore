@@ -91,3 +91,6 @@ docs/_build/
 
 # virtual environment
 venv/
+
+#secretes 
+/infra/secrets/secrets.yaml
