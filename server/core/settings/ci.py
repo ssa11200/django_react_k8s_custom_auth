@@ -1,7 +1,23 @@
+from pymongo_inmemory import MongoClient
+
 from .base import *
 from ..env_config import EnvConfig
+
+SECRET_KEY = "jewhrgjewhrgwerjherww"
+
+clinet = MongoClient()
+
+ip, port = clinet._mongod._mongod_ip, clinet._mongod._mongod_port
+mongo_uri = "mongodb://{}:{}".format(ip, port)
 
 ALLOWED_HOSTS = []
 DEBUG = True
 
-DATABASES = {"default": {"ENGINE": "djongo", "NAME": EnvConfig.get_env("DB_NAME")}}
+DATABASES = {
+    "default": {
+        "ENGINE": "djongo",
+        "CLIENT": {
+            "host": mongo_uri,
+        },
+    }
+}
