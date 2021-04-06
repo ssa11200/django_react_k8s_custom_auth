@@ -12,23 +12,20 @@ from .serializers import SignupSerializer
 from .errors import BadRequestError, NotAuthorizedError
 from .types import CustomError
 from core.env_config import EnvConfig
+from core.settings import SECRET_KEY as secret
 
 
 class TokenManager:
-    secret = EnvConfig.get_env("SECRET_KEY")
-
     @staticmethod
     def create_token(userId: str) -> str:
         payload = {"userId": userId}
-        return jwt.encode(payload, TokenManager.secret, algorithm="HS256").decode(
-            "utf-8"
-        )
+        return jwt.encode(payload, secret, algorithm="HS256").decode("utf-8")
 
     # TODO: error handeling
     @staticmethod
     def decode_token(token: str) -> str:
         try:
-            return jwt.decode(token, TokenManager.secret)
+            return jwt.decode(token, secret)
         except Exception as error:
             print("Invalid token:", error)
             raise NotAuthorizedError
