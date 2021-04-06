@@ -72,6 +72,7 @@ def omit(dictionary: dict, key: str) -> dict:
     return omitted_dict
 
 
+# convert string id to mongo object id
 def string_to_objectId(string_id: str) -> ObjectId:
     try:
         return ObjectId(string_id)
