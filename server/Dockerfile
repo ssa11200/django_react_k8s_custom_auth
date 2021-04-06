@@ -1,6 +1,7 @@
 FROM python:3
 
-ENV PYTHONUNBUFFERED=1
+#send container logs to the terminal without buffering it first
+ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
