@@ -9,3 +9,5 @@ if DEV:
     from .dev import *
 elif TEST:
     from .ci import *
+else:
+    from .dev import *

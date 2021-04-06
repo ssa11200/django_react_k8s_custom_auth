@@ -1,8 +1,4 @@
-from bson.objectid import ObjectId
-
-# from rest_framework.request import Request
-
-from .utils import TokenManager
+from .utils import TokenManager, string_to_objectId
 from .models import User
 from .serializers import SignupSerializer
 from .errors import NotAuthorizedError
@@ -16,11 +12,9 @@ def current_user(view_function):
 
             jw_token = request.session.get("jwt")
 
-            # TODO: error handeling for invalid token
             user_id = TokenManager.decode_token(jw_token)["userId"]
 
-            # TODO: error handeling for invalid objectId
-            user = User.objects.filter(_id=ObjectId(user_id)).first()
+            user = User.objects.filter(_id=string_to_objectId(user_id)).first()
 
             request.current_user = (
                 SignupSerializer(instance=user).data if user is not None else None
@@ -38,7 +32,7 @@ def require_auth(view_function):
     def decorator(request, *args, **kwargs):
 
         if request.current_user is None:
-            # TODO: custom errors
+
             raise NotAuthorizedError()
 
         return view_function(request, *args, **kwargs)

@@ -5,25 +5,33 @@ from copy import deepcopy
 from rest_framework.serializers import ReturnDict
 from rest_framework.response import Response
 from typing import List, Dict
+from bson.objectid import ObjectId
 
 from .models import User
 from .serializers import SignupSerializer
-from .errors import BadRequestError
+from .errors import BadRequestError, NotAuthorizedError
 from .types import CustomError
+from core.env_config import EnvConfig
 
 
 class TokenManager:
+    secret = EnvConfig.get_env("SECRET_KEY")
+
     @staticmethod
-    # TODO: replace secret
     def create_token(userId: str) -> str:
-        return jwt.encode({"userId": userId}, "secret", algorithm="HS256").decode(
+        payload = {"userId": userId}
+        return jwt.encode(payload, TokenManager.secret, algorithm="HS256").decode(
             "utf-8"
         )
 
     # TODO: error handeling
     @staticmethod
     def decode_token(token: str) -> str:
-        return jwt.decode(token, "secret")
+        try:
+            return jwt.decode(token, TokenManager.secret)
+        except Exception as error:
+            print("Invalid token:", error)
+            raise NotAuthorizedError
 
 
 # TODO: move to a proper module
@@ -65,3 +73,11 @@ def omit(dictionary: dict, key: str) -> dict:
     omitted_dict = deepcopy(dictionary)
     del omitted_dict[key]
     return omitted_dict
+
+
+def string_to_objectId(string_id: str) -> ObjectId:
+    try:
+        return ObjectId(string_id)
+    except Exception as error:
+        print("Invalid id:", error)
+        raise BadRequestError("Invalid object id.")
