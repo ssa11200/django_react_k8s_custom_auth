@@ -3,6 +3,7 @@ from pymongo_inmemory import MongoClient
 from .base import *
 from ..env_config import EnvConfig
 
+# fake secret key only for test environment
 SECRET_KEY = "jewhrgjewhrgwerjherww"
 
 clinet = MongoClient()
